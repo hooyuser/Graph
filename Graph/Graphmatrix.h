@@ -45,8 +45,8 @@ private:
 
 public:
 	GraphMatrix()  //构造
-	{ 
-		n = e = 0; 
+	{
+		n = e = 0;
 	}
 	~GraphMatrix()  //析构
 	{
@@ -55,23 +55,59 @@ public:
 				delete E[j][k]; //逐条清除
 	}
 
-// 顶点的基本操作：查询第i个顶点（0 <= i < n）
-	virtual Tv& vertex(int i) { return V[i].data; } //数据
-	virtual int inDegree(int i) { return V[i].inDegree; } //入度
-	virtual int outDegree(int i) { return V[i].outDegree; } //出度
-	virtual int firstNbr(int i) { return nextNbr(i, n); } //首个邻接顶点
+	// 顶点的基本操作：查询第i个顶点（0 <= i < n）
+	virtual Tv& vertex(int i)
+	{
+		return V[i].data; //数据
+	}
+
+	virtual int inDegree(int i)
+	{
+		return V[i].inDegree;  //入度
+	}
+
+	virtual int outDegree(int i)
+	{
+		return V[i].outDegree; //出度
+	}
+
+	virtual int firstNbr(int i)
+	{
+		return nextNbr(i, n);  //首个邻接顶点
+	}
+
 	virtual int nextNbr(int i, int j) //相对于顶点j的下一邻接顶点（改用邻接表可提高效率）
 	{
-		while ((-1 < j) && (!exists(i, --j)));
+		while ((-1 < j) && (!exists(i, --j))); //逆向线性试探
 		return j;
-	} //逆向线性试探
-	virtual VStatus& status(int i) { return V[i].status; } //状态
-	virtual int& dTime(int i) { return V[i].dTime; } //时间标签dTime
-	virtual int& fTime(int i) { return V[i].fTime; } //时间标签fTime
-	virtual int& parent(int i) { return V[i].parent; } //在遍历树中的父亲
-	virtual int& priority(int i) { return V[i].priority; } //在遍历树中的优先级数
+	}
 
- // 顶点的动态操作
+	virtual VStatus& status(int i)
+	{
+		return V[i].status;  //状态
+	}
+
+	virtual int& dTime(int i)
+	{
+		return V[i].dTime; //时间标签dTime
+	}
+
+	virtual int& fTime(int i)
+	{
+		return V[i].fTime;  //时间标签fTime
+	}
+
+	virtual int& parent(int i)
+	{
+		return V[i].parent; //在遍历树中的父亲 
+	}
+
+	virtual int& priority(int i)
+	{
+		return V[i].priority; //在遍历树中的优先级数
+	}
+
+	// 顶点的动态操作
 	virtual int insert(Tv const& vertex)  //插入顶点，返回编号
 	{
 		for (int j = 0; j < n; j++)
@@ -115,24 +151,40 @@ public:
 	}
 
 	// 边的基本操作：查询顶点i与j之间的联边（0 <= i, j < n且exists(i, j)）
-	virtual EType & type(int i, int j) { return E[i][j]->type; } //边(i, j)的类型
-	virtual Te& edge(int i, int j) { return E[i][j]->data; } //边(i, j)的数据
-	virtual int& weight(int i, int j) { return E[i][j]->weight; } //边(i, j)的权重
+	virtual EType & type(int i, int j)
+	{
+		return E[i][j]->type;  //边(i, j)的类型
+	}
 
-// 边的动态操作
+	virtual Te& edge(int i, int j)
+	{
+		return E[i][j]->data;  //边(i, j)的数据
+	}
+
+	virtual int& weight(int i, int j)
+	{
+		return E[i][j]->weight; //边(i, j)的权重
+	}
+
+	// 边的动态操作
 	virtual void insert(Te const& edge, int w, int i, int j)  //插入权重为w的边e = (i, j)
 	{
-		if (exists(i, j)) 
+		if (exists(i, j))
 			return; //确保该边尚不存在
 		E[i][j] = new Edge<Te>(edge, w); //创建新边
-		e++; 
-		V[i].outDegree++; 
+		e++;
+		V[i].outDegree++;
 		V[j].inDegree++; //更新边计数与关联顶点的度数
 	}
 
-	virtual Te remove(int i, int j) { //删除顶点i和j之间的联边（exists(i, j)）
-		Te eBak = edge(i, j); delete E[i][j]; E[i][j] = NULL; //备份后删除边记录
-		e--; V[i].outDegree--; V[j].inDegree--; //更新边计数与关联顶点的度数
+	virtual Te remove(int i, int j)  //删除顶点i和j之间的联边（exists(i, j)）
+	{
+		Te eBak = edge(i, j);
+		delete E[i][j];
+		E[i][j] = NULL; //备份后删除边记录
+		e--;
+		V[i].outDegree--;
+		V[j].inDegree--; //更新边计数与关联顶点的度数
 		return eBak; //返回被删除边的信息
 	}
 };

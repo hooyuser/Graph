@@ -12,7 +12,8 @@ typedef enum { UNDISCOVERED, DISCOVERED, VISITED } VStatus; //顶点状态
 typedef enum { UNDETERMINED, TREE, CROSS, FORWARD, BACKWARD } EType; //边在遍历树中所属的类型
 
 template <typename Tv, typename Te> //顶点类型、边类型
-class Graph { //图Graph模板类
+class Graph  //图Graph模板类
+{
 private:
 	void reset() { //所有顶点、边的辅助信息复位
 		for (int i = 0; i < n; i++) { //所有顶点的
@@ -62,3 +63,35 @@ public:
 	template <typename PU> void pfs(int, PU); //优先级搜索框架
 };
 
+
+
+
+/*Graph模板类实现*/
+
+template <typename Tv, typename Te> //广度优先搜索BFS算法（单个连通域）
+void Graph<Tv, Te>::BFS(int v, int& clock) { //assert: 0 <= v < n
+	Queue<int> Q; //引入辅助队列
+	status(v) = DISCOVERED; Q.enqueue(v); //初始化起点
+	while (!Q.empty()) { //在Q变空之前，不断
+		int v = Q.dequeue(); dTime(v) = ++clock; //取出队首顶点v
+		for (int u = firstNbr(v); -1 < u; u = nextNbr(v, u)) //枚举v的所有邻居u
+			if (UNDISCOVERED == status(u)) { //若u尚未被发现，则
+				status(u) = DISCOVERED; Q.enqueue(u); //发现该顶点
+				type(v, u) = TREE; parent(u) = v; //引入树边拓展支撑树
+			}
+			else { //若u已被发现，或者甚至已访问完毕，则
+				type(v, u) = CROSS; //将(v, u)归类于跨边
+			}
+			status(v) = VISITED; //至此，当前顶点访问完毕
+	}
+}
+
+
+template <typename Tv, typename Te> //广度优先搜索BFS算法（全图）
+void Graph<Tv, Te>::bfs(int s) { //assert: 0 <= s < n
+	reset(); int clock = 0; int v = s; //初始化
+	do //逐一检查所有顶点
+		if (UNDISCOVERED == status(v)) //一旦遇到尚未发现的顶点
+			BFS(v, clock); //即从该顶点出发启动一次BFS
+	while (s != (v = (++v % n))); //按序号检查，故不漏不重
+}
