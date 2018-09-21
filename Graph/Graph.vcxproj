@@ -117,6 +117,7 @@
   <ItemGroup>
     <ClInclude Include="Graph.h" />
     <ClInclude Include="Graphmatrix.h" />
+    <ClInclude Include="Stack.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
