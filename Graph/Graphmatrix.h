@@ -1,7 +1,13 @@
-#pragma once
+/*图ADT的一种实现：邻接矩阵*/
 
-#include "Vector.h" //引入向量
+#ifndef GRAPHMATRIX_H_
+#define GRAPHMATRIX_H_
+
 #include "Graph.h" //引入图ADT
+
+template <typename Tv, typename Te>
+class Graph;
+
 
 template <typename Tv>
 struct Vertex  //顶点对象（为简化起见，并未严格封装）
@@ -180,3 +186,5 @@ public:
 		return eBak; //返回被删除边的信息
 	}
 };
+
+#endif

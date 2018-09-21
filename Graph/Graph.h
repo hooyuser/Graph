@@ -1,5 +1,8 @@
-#pragma once
+#ifndef GRAPH_H_
+#define GRAPH_H_
+
 #include "Stack.h"
+#include "Queue.h"
 
 typedef enum { UNDISCOVERED, DISCOVERED, VISITED } VStatus; //顶点状态
 typedef enum { UNDETERMINED, TREE, CROSS, FORWARD, BACKWARD } EType; //边在遍历树中所属的类型
@@ -353,3 +356,5 @@ void Graph<Tv, Te>::dijkstra(int s)  //assert: 0 <= s < n
 		}
 	}
 } //对于无向连通图，假设每一条边表示为方向互逆、权重相等的一对边
+
+#endif

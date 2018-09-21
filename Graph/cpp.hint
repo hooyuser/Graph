@@ -1,0 +1,1 @@
+#define ListNodePosi(T) ListNode<T> *
