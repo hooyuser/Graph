@@ -1,11 +1,3 @@
-/******************************************************************************************
- * Data Structures in C++
- * ISBN: 7-302-33064-6 & 7-302-33065-3 & 7-302-29652-2 & 7-302-26883-3
- * Junhui DENG, deng@tsinghua.edu.cn
- * Computer Science & Technology, Tsinghua University
- * Copyright (c) 2006-2013. All rights reserved.
- ******************************************************************************************/
-
 #pragma once
 
 #include "Vector.h" //引入向量
@@ -55,7 +47,7 @@ public:
 				delete E[j][k]; //逐条清除
 	}
 
-	// 顶点的基本操作：查询第i个顶点（0 <= i < n）
+// 顶点的基本操作：查询第i个顶点（0 <= i < n）
 	virtual Tv& vertex(int i)
 	{
 		return V[i].data; //数据
@@ -107,7 +99,7 @@ public:
 		return V[i].priority; //在遍历树中的优先级数
 	}
 
-	// 顶点的动态操作
+// 顶点的动态操作
 	virtual int insert(Tv const& vertex)  //插入顶点，返回编号
 	{
 		for (int j = 0; j < n; j++)
@@ -144,13 +136,13 @@ public:
 		return vBak; //返回被删除顶点的信息
 	}
 
-	// 边的确认操作
+// 边的确认操作
 	virtual bool exists(int i, int j) //边(i, j)是否存在
 	{
 		return (0 <= i) && (i < n) && (0 <= j) && (j < n) && E[i][j] != NULL;
 	}
 
-	// 边的基本操作：查询顶点i与j之间的联边（0 <= i, j < n且exists(i, j)）
+// 边的基本操作：查询顶点i与j之间的联边（0 <= i, j < n且exists(i, j)）
 	virtual EType & type(int i, int j)
 	{
 		return E[i][j]->type;  //边(i, j)的类型
@@ -166,7 +158,7 @@ public:
 		return E[i][j]->weight; //边(i, j)的权重
 	}
 
-	// 边的动态操作
+// 边的动态操作
 	virtual void insert(Te const& edge, int w, int i, int j)  //插入权重为w的边e = (i, j)
 	{
 		if (exists(i, j))

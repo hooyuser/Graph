@@ -1,11 +1,3 @@
-/******************************************************************************************
- * Data Structures in C++
- * ISBN: 7-302-33064-6 & 7-302-33065-3 & 7-302-29652-2 & 7-302-26883-3
- * Junhui DENG, deng@tsinghua.edu.cn
- * Computer Science & Technology, Tsinghua University
- * Copyright (c) 2006-2013. All rights reserved.
- ******************************************************************************************/
-
 #pragma once
 
 typedef enum { UNDISCOVERED, DISCOVERED, VISITED } VStatus; //顶点状态
@@ -15,12 +7,21 @@ template <typename Tv, typename Te> //顶点类型、边类型
 class Graph  //图Graph模板类
 {
 private:
-	void reset() { //所有顶点、边的辅助信息复位
-		for (int i = 0; i < n; i++) { //所有顶点的
-			status(i) = UNDISCOVERED; dTime(i) = fTime(i) = -1; //状态，时间标签
-			parent(i) = -1; priority(i) = INT_MAX; //（在遍历树中的）父节点，优先级数
+	void reset()  //所有顶点、边的辅助信息复位
+	{
+		for (int i = 0; i < n; i++)  //所有顶点的
+		{
+			status(i) = UNDISCOVERED;
+			dTime(i) = fTime(i) = -1; //状态，时间标签
+			parent(i) = -1;
+			priority(i) = INT_MAX; //（在遍历树中的）父节点，优先级数
 			for (int j = 0; j < n; j++) //所有边的
-				if (exists(i, j)) type(i, j) = UNDETERMINED; //类型
+			{
+				if (exists(i, j))
+				{
+					type(i, j) = UNDETERMINED; //类型
+				}
+			}
 		}
 	}
 	void BFS(int, int&); //（连通域）广度优先搜索算法
@@ -29,7 +30,7 @@ private:
 	bool TSort(int, int&, Stack<Tv>*); //（连通域）基于DFS的拓扑排序算法
 	template <typename PU> void PFS(int, PU); //（连通域）优先级搜索框架
 public:
-// 顶点
+	// 顶点
 	int n; //顶点总数
 	virtual int insert(Tv const&) = 0; //插入顶点，返回编号
 	virtual Tv remove(int) = 0; //删除顶点及其关联边，返回该顶点信息
@@ -69,29 +70,81 @@ public:
 /*Graph模板类实现*/
 
 template <typename Tv, typename Te> //广度优先搜索BFS算法（单个连通域）
-void Graph<Tv, Te>::BFS(int v, int& clock) { //assert: 0 <= v < n
+void Graph<Tv, Te>::BFS(int v, int& clock) //assert: 0 <= v < n 
+{
 	Queue<int> Q; //引入辅助队列
-	status(v) = DISCOVERED; Q.enqueue(v); //初始化起点
-	while (!Q.empty()) { //在Q变空之前，不断
-		int v = Q.dequeue(); dTime(v) = ++clock; //取出队首顶点v
+	status(v) = DISCOVERED;
+	Q.enqueue(v); //初始化起点
+	while (!Q.empty())  //在Q变空之前，不断
+	{
+		int v = Q.dequeue();  //取出队首顶点v
+		dTime(v) = ++clock;
 		for (int u = firstNbr(v); -1 < u; u = nextNbr(v, u)) //枚举v的所有邻居u
-			if (UNDISCOVERED == status(u)) { //若u尚未被发现，则
-				status(u) = DISCOVERED; Q.enqueue(u); //发现该顶点
-				type(v, u) = TREE; parent(u) = v; //引入树边拓展支撑树
+		{
+			if (UNDISCOVERED == status(u)) //若u尚未被发现，则
+			{
+				status(u) = DISCOVERED;  //发现该顶点
+				Q.enqueue(u);
+				type(v, u) = TREE;
+				parent(u) = v; //引入树边拓展支撑树
 			}
-			else { //若u已被发现，或者甚至已访问完毕，则
+			else //若u已被发现，或者甚至已访问完毕，则
+			{
 				type(v, u) = CROSS; //将(v, u)归类于跨边
 			}
-			status(v) = VISITED; //至此，当前顶点访问完毕
+		}
+		status(v) = VISITED; //至此，当前顶点访问完毕
 	}
 }
 
 
 template <typename Tv, typename Te> //广度优先搜索BFS算法（全图）
-void Graph<Tv, Te>::bfs(int s) { //assert: 0 <= s < n
+void Graph<Tv, Te>::bfs(int s)  //assert: 0 <= s < n
+{
+	reset();
+	int clock = 0;
+	int v = s; //初始化
+	do //逐一检查所有顶点
+	{
+		if (UNDISCOVERED == status(v)) //一旦遇到尚未发现的顶点
+		{
+			BFS(v, clock);//即从该顶点出发启动一次BFS
+		}
+	} while (s != (v = (++v % n))); //按序号检查，故不漏不重
+}
+
+
+template <typename Tv, typename Te> //深度优先搜索DFS算法（单个连通域）
+void Graph<Tv, Te>::DFS(int v, int& clock)  //assert: 0 <= v < n
+{
+	dTime(v) = ++clock;
+	status(v) = DISCOVERED; //发现当前顶点v
+	for (int u = firstNbr(v); -1 < u; u = nextNbr(v, u)) //枚举v的所有邻居u
+	{
+		switch (status(u))  //并视其状态分别处理
+		{
+		case UNDISCOVERED: //u尚未发现，意味着支撑树可在此拓展
+			type(v, u) = TREE;
+			parent(u) = v;
+			DFS(u, clock);
+			break;
+		case DISCOVERED: //u已被发现但尚未访问完毕，应属被后代指向的祖先
+			type(v, u) = BACKWARD;
+			break;
+		default: //u已访问完毕（VISITED，有向图），则视承袭关系分为前向边或跨边
+			type(v, u) = (dTime(v) < dTime(u)) ? FORWARD : CROSS;
+			break;
+		}
+	}
+	status(v) = VISITED; 
+	fTime(v) = ++clock; //至此，当前顶点v方告访问完毕
+}
+
+template <typename Tv, typename Te> //深度优先搜索DFS算法（全图）
+void Graph<Tv, Te>::dfs(int s) { //assert: 0 <= s < n
 	reset(); int clock = 0; int v = s; //初始化
 	do //逐一检查所有顶点
 		if (UNDISCOVERED == status(v)) //一旦遇到尚未发现的顶点
-			BFS(v, clock); //即从该顶点出发启动一次BFS
+			DFS(v, clock); //即从该顶点出发启动一次DFS
 	while (s != (v = (++v % n))); //按序号检查，故不漏不重
 }
