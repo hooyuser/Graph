@@ -3,10 +3,9 @@
 #ifndef GRAPHMATRIX_H_
 #define GRAPHMATRIX_H_
 
-#include "Graph.h" //引入图ADT
-
-template <typename Tv, typename Te>
+template <typename Tv, typename Te> //顶点类型、边类型
 class Graph;
+
 
 
 template <typename Tv>
@@ -31,12 +30,14 @@ struct Edge  //边对象（为简化起见，并未严格封装）
 	int weight; //权重
 	EType type; //类型
 
-	Edge(Te const& d, int w) : data(d), weight(w), type(UNDETERMINED) {} //构造
+	Edge(Te const& d, int w) : data(d), weight(w), type(UNDETERMINED) {} //初始化构造器
 };
 
 template <typename Tv, typename Te> //顶点类型、边类型
 class GraphMatrix : public Graph<Tv, Te>  //基于向量，以邻接矩阵形式实现的图
 {
+	using Graph<Tv, Te>::n;  
+	using Graph<Tv, Te>::e;
 private:
 	Vector<Vertex<Tv>> V; //顶点集（向量）
 	Vector<Vector<Edge<Te> *>> E; //边集（邻接矩阵）
@@ -44,6 +45,7 @@ private:
 public:
 	GraphMatrix()  //构造
 	{
+		
 		n = e = 0;
 	}
 	~GraphMatrix()  //析构
@@ -53,7 +55,7 @@ public:
 				delete E[j][k]; //逐条清除
 	}
 
-// 顶点的基本操作：查询第i个顶点（0 <= i < n）
+	// 顶点的基本操作：查询第i个顶点（0 <= i < n）
 	virtual Tv& vertex(int i)
 	{
 		return V[i].data; //数据
@@ -105,7 +107,7 @@ public:
 		return V[i].priority; //在遍历树中的优先级数
 	}
 
-// 顶点的动态操作
+	// 顶点的动态操作
 	virtual int insert(Tv const& vertex)  //插入顶点，返回编号
 	{
 		for (int j = 0; j < n; j++)
@@ -142,13 +144,13 @@ public:
 		return vBak; //返回被删除顶点的信息
 	}
 
-// 边的确认操作
+	// 边的确认操作
 	virtual bool exists(int i, int j) //边(i, j)是否存在
 	{
 		return (0 <= i) && (i < n) && (0 <= j) && (j < n) && E[i][j] != NULL;
 	}
 
-// 边的基本操作：查询顶点i与j之间的联边（0 <= i, j < n且exists(i, j)）
+	// 边的基本操作：查询顶点i与j之间的联边（0 <= i, j < n且exists(i, j)）
 	virtual EType & type(int i, int j)
 	{
 		return E[i][j]->type;  //边(i, j)的类型
@@ -164,7 +166,7 @@ public:
 		return E[i][j]->weight; //边(i, j)的权重
 	}
 
-// 边的动态操作
+	// 边的动态操作
 	virtual void insert(Te const& edge, int w, int i, int j)  //插入权重为w的边e = (i, j)
 	{
 		if (exists(i, j))

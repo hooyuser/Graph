@@ -1,6 +1,8 @@
 #include<iostream>
 
+#include"Graph.h"
 #include"Graphmatrix.h"
+
 
 using namespace std;
 
