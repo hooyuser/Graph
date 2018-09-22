@@ -7,15 +7,15 @@ template <typename T> class Queue : public List<T> //¶ÓÁĞÄ£°åÀà£¨¼Ì³ĞListÔ­ÓĞ½Ó¿
 public: //size()¡¢empty()ÒÔ¼°ÆäËü¿ª·Å½Ó¿Ú¾ù¿ÉÖ±½ÓÑØÓÃ
 	void enqueue(T const& e) 
 	{ 
-		this->insertAsLast(e);  //Èë¶Ó£ºÎ²²¿²åÈë
+		List<T>::insertAsLast(e);  //Èë¶Ó£ºÎ²²¿²åÈë
 	}
 	T dequeue() 
 	{ 
-		return remove(this->first()); //³ö¶Ó£ºÊ×²¿É¾³ı
+		return List<T>::remove(List<T>::first()); //³ö¶Ó£ºÊ×²¿É¾³ı
 	}
 	T& front() 
 	{ 
-		return this->first()->data;  //¶ÓÊ×
+		return List<T>::first()->data;  //¶ÓÊ×
 	}
 };
 

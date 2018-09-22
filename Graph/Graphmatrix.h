@@ -4,8 +4,8 @@
 #define GRAPHMATRIX_H_
 
 template <typename Tv, typename Te> //顶点类型、边类型
-class Graph;
 
+class Graph;  //声明抽象基类 Graph
 
 
 template <typename Tv>
@@ -48,6 +48,16 @@ public:
 		
 		n = e = 0;
 	}
+
+	GraphMatrix(const GraphMatrix& GraphMatrix)  //复制构造
+	{
+		n = GraphMatrix.n;
+		e = GraphMatrix.e;
+		V = Vector<Vertex<Tv>>(GraphMatrix.V);
+		E = Vector<Vector<Edge<Te> *>>(GraphMatrix.E);
+	}
+
+
 	~GraphMatrix()  //析构
 	{
 		for (int j = 0; j < n; j++) //所有动态创建的
@@ -102,7 +112,7 @@ public:
 		return V[i].parent; //在遍历树中的父亲 
 	}
 
-	virtual int& priority(int i)
+	virtual int & priority(int i)
 	{
 		return V[i].priority; //在遍历树中的优先级数
 	}

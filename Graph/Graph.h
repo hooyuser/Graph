@@ -3,9 +3,15 @@
 
 #include "Stack.h"
 #include "Queue.h"
+#include<iostream>
+
 
 typedef enum { UNDISCOVERED, DISCOVERED, VISITED } VStatus; //顶点状态
 typedef enum { UNDETERMINED, TREE, CROSS, FORWARD, BACKWARD } EType; //边在遍历树中所属的类型
+
+
+using namespace std;
+
 
 template <typename Tv, typename Te> //顶点类型、边类型
 class Graph  //图Graph抽象类模板
@@ -78,6 +84,7 @@ void Graph<Tv, Te>::BFS(int v, int& clock) //assert: 0 <= v < n
 {
 	Queue<int> Q; //引入辅助队列
 	status(v) = DISCOVERED;
+	/*For display*/cout << vertex(v) << " ";
 	Q.enqueue(v); //初始化起点
 	while (!Q.empty())  //在Q变空之前，不断
 	{
@@ -88,6 +95,7 @@ void Graph<Tv, Te>::BFS(int v, int& clock) //assert: 0 <= v < n
 			if (UNDISCOVERED == status(u)) //若u尚未被发现，则
 			{
 				status(u) = DISCOVERED;  //发现该顶点
+				/*For display*/cout << vertex(u) << " ";
 				Q.enqueue(u);
 				type(v, u) = TREE;
 				parent(u) = v; //引入树边拓展支撑树
@@ -114,7 +122,7 @@ void Graph<Tv, Te>::bfs(int s)  //assert: 0 <= s < n
 		{
 			BFS(v, clock);//即从该顶点出发启动一次BFS
 		}
-	} while (s != (v = (++v % n))); //按序号检查，故不漏不重
+	} while (s != (v = (++v % n))); //从序号s循环一圈回到s-1，故不漏不重
 }
 
 
@@ -123,6 +131,7 @@ void Graph<Tv, Te>::DFS(int v, int& clock)  //assert: 0 <= v < n
 {
 	dTime(v) = ++clock;
 	status(v) = DISCOVERED; //发现当前顶点v
+	/*For display*/cout << vertex(v) << " "; 
 	for (int u = firstNbr(v); -1 < u; u = nextNbr(v, u)) //枚举v的所有邻居u
 	{
 		switch (status(u))  //并视其状态分别处理
@@ -147,12 +156,14 @@ void Graph<Tv, Te>::DFS(int v, int& clock)  //assert: 0 <= v < n
 template <typename Tv, typename Te> //深度优先搜索DFS算法（全图）
 void Graph<Tv, Te>::dfs(int s)  //assert: 0 <= s < n
 {
-	reset(); int clock = 0; int v = s; //初始化
+	reset(); 
+	int clock = 0; 
+	int v = s; //初始化
 	do //逐一检查所有顶点
 	{
 		if (UNDISCOVERED == status(v)) //一旦遇到尚未发现的顶点
 			DFS(v, clock); //即从该顶点出发启动一次DFS
-	} while (s != (v = (++v % n))); //按序号检查，故不漏不重
+	} while (s != (v = (++v % n))); //从序号s循环一圈回到s-1，故不漏不重
 }
 
 
@@ -263,7 +274,7 @@ Stack<Tv>* Graph<Tv, Te>::tSort(int s) //assert: 0 <= s < n
 		if (UNDISCOVERED == status(v))
 			if (!TSort(v, clock, S))  //clock并非必需
 			{
-				/*DSA*/print(S);
+				/*DSA print(S);*/
 				while (!S->empty()) //任一连通域（亦即整图）非DAG
 					S->pop();
 				break; //则不必继续计算，故直接返回

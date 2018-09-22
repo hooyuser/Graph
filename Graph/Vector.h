@@ -162,7 +162,7 @@ public:
 		quickSort(0, _size);
 	}
 
-	void heapSort(Rank lo, Rank hi); //堆排序（稍后结合完全堆讲解）
+	void heapSort(Rank lo, Rank hi); //堆排序
 
 
 // 遍历
@@ -405,10 +405,10 @@ void Vector<T>::sort(Rank lo, Rank hi) //向量区间[lo, hi)排序
 	switch (rand() % 5) //随机选取排序算法。可根据具体问题的特点灵活选取或扩充
 	{
 	case 1:  bubbleSort(lo, hi); break; //起泡排序
-	case 2:  selectionSort(lo, hi); break; //选择排序（习题）
+	case 2:  selectionSort(lo, hi); break; //选择排序
 	case 3:  mergeSort(lo, hi); break; //归并排序
-	case 4:  heapSort(lo, hi); break; //堆排序（稍后介绍）
-	default: quickSort(lo, hi); break; //快速排序（稍后介绍）
+	case 4:  heapSort(lo, hi); break; //堆排序
+	default: quickSort(lo, hi); break; //快速排序
 	}
 }
 
@@ -569,19 +569,20 @@ static Rank simpleFibSearch(T* A, T const& e, Rank lo, Rank hi)
 } //有多个命中元素时，不能保证返回秩最大者；失败时，简单地返回-1，而不能指示失败的位置
 
 
-template<typename T>
-void Vector<T>::traverse(void(*)(T &))
+template <typename T> 
+void Vector<T>::traverse(void(*visit) (T&)) //借助函数指针机制
 {
-	for (int i = 0; i < _size; i++) visit(_elem[i]); //遍历向量
-}
+	for (int i = 0; i < _size; i++) 
+		visit(_elem[i]);
+} //遍历向量
 
-
-template <typename T> //元素类型
-template <typename VST> //操作器
-void Vector<T>::traverse(VST& visit) //倚劣函数对象机刢
+template <typename T> 
+template <typename VST> //元素类型、操作器
+void Vector<T>::traverse(VST& visit) //借助函数对象机制
 {
-	for (int i = 0; i < _size; i++) visit(_elem[i]); //遍历向量
-}
+	for (int i = 0; i < _size; i++) 
+		visit(_elem[i]);
+} //遍历向量
 
 
 #endif 
