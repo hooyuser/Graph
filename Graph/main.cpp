@@ -35,10 +35,11 @@ void DisplayMatrix(GraphMatrix<Tv, Te>* graph)
 
 int main()
 {
-	GraphMatrix<int, double> Network;  //构造一个带权有向图
-	for (int i = 1; i <= 32; i++)
+	GraphMatrix<char, char> Network;  //构造一个带权有向图
+	Network.insert('S');
+	for (int i = 0; i < 7; i++)
 	{
-		Network.insert(i);
+		Network.insert('A' + i);
 	}
 	Network.insert(0, 9, 0, 1);
 	Network.insert(0, 14, 0, 3);
